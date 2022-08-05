@@ -17,16 +17,16 @@ En JavaScript, il est possible d'utiliser le parser [TypeScript](https://github.
 
 Prenons par exemple ce code JavaScript :
 ```js
-const  greetings  = {fr:  'Bonjour', en:  'Hello', jp:  'こんにちは'};
-function  sayHello(name,  lang  =  'en') {
-  console.log(`${greetings[lang]}  ${name} !`);
+const greetings = {fr: 'Bonjour', en: 'Hello', jp: 'こんにちは'};
+function sayHello(name, lang = 'en') {
+  console.log(`${greetings[lang]} ${name} !`);
 }
 sayHello('Baboulinet');
 ```
 
 Ce qui nous donne en AST via le parser TypeScript ([lien externe](https://astexplorer.net/#/gist/314f976d04f5cc98398292aac174cfcd/18b28c7257557b34f08b8ef38e454722ee3a8a11)) :
 
-<iframe  width="100%"  height="600px"  src="https://astexplorer.net/#/gist/314f976d04f5cc98398292aac174cfcd/18b28c7257557b34f08b8ef38e454722ee3a8a11"></iframe>
+<iframe width="100%" height="600px" src="https://astexplorer.net/#/gist/314f976d04f5cc98398292aac174cfcd/18b28c7257557b34f08b8ef38e454722ee3a8a11"></iframe>
 
 Dans l'AST nous remarquons dans `statements` trois éléments :
 - `VariableStatement` qui correspond à notre variable `greetings`
@@ -100,7 +100,7 @@ Prenons comme HTML test ce contenu :
 <input aria-label="test checkbox" class="form-check-input" type="checkbox">
 <textarea maxlength="500"></textarea>
 ```
-A l’exécution via un `node scan.mjs` (avec `scan` comme étant le nom du fichier contenant le code ci dessus) :
+A l’exécution via un `node scan.mjs` (avec `scan.mjs` comme étant le nom du fichier contenant le code JavaScript ci-dessus), nous aurons comme output :
 ```log
 ───/home/cub/example/test.html─────────────────────────────────────────────────────────────────────
 ❌ <input aria-label="test checkbox" class="form-check-input" type="checkbox">
@@ -108,7 +108,48 @@ A l’exécution via un `node scan.mjs` (avec `scan` comme étant le nom du fich
 ```
 Libre à vous ensuite de corriger les `id` manquants dans votre code.
 
-## Exemple JavaScript
+## Exemple JavaScript, migrer un fichier Vue de la syntaxe Options API en Composition API
+
+```html
+<script>
+export default {
+  data() {
+    return {
+      message: 'Hello World!'
+    }
+  }
+}
+</script>
+
+<template>
+  <h1>{{ message }}</h1>
+</template>
+```
+
+```js
+import { resolve } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { promisify } from 'node:util';
+import { parseDocument, DomUtils } from 'htmlparser2';
+import render from 'dom-serializer';
+import chalk from 'chalk';
+import _glob from 'glob';
+// transform callback to promise
+const glob = promisify(_glob);
+// where you want to scan html files
+const PATH = resolve('./');
+const files = await glob(`${PATH}/**/*.vue`);
+
+files.forEach((file) => {
+  // read the file's content
+  const content = readFileSync(file, 'utf-8');
+  // transform the content into object
+  const dom = parseDocument(content);
+
+  const script = render(DomUtils.getElementsByTagName('script', dom)[0].children);
+  console.log(script);
+});
+```
 
 ## Bonus
 
