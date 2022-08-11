@@ -1,19 +1,21 @@
 # Abstract Syntax Tree "AST", votre ami pour manipuler votre code
 
+## Qu'est-ce que l'Abstract Syntax Tree ?
+Votre code est rempli de conditions, variables, fonctions, ... et tout cela est interprété pour être exécuté. L'AST va permettre d'avoir une arborescence de tout votre code et de le parcourir tel un objet/JSON. Chaque langage à son/ses interpréteurs.
+En JavaScript, il est possible d'utiliser le parser [TypeScript](https://github.com/Microsoft/TypeScript) ou [Acorn](https://github.com/acornjs/acorn) par exemple. Le site [AST explorer](https://astexplorer.net/) permet de tester/choisir parmi différents langages et parser, puis de voir le résultat de l'AST.
+
 ## Introduction
 Dans cet article nous allons voir comment parcourir votre code via un AST pour y lire le contenu et chercher des patterns. Nous prendrons un exemple avec du HTML et un autre exemple avec du JavaScript. Nous serons dans un environnement Node.js dans ces exemples. Il est possible de générer des AST dans d'autres langages/environnements comme PHP, Go, Python, ...
 
 J'utiliserais de nombreux anglicismes. Voici un rapide glossaire :
 > [AST, Abstract Syntax Tree](https://fr.wikipedia.org/wiki/Arbre_de_la_syntaxe_abstraite) : un arbre dont les nœuds internes sont marqués par des opérateurs et dont les feuilles (ou nœuds externes) représentent les opérandes de ces opérateurs.
 
+<small>(si vous ne comprenez pas cette définition, pas d'inquiétude, c'est plus simple avec des exemples 😉)</small>
+
 > [Parser](https://fr.wiktionary.org/wiki/parser) : outil ou action d'analyse du contenu d'un texte ou d'un fichier pour vérifier sa syntaxe ou en extraire des éléments.
 
 ## Pourquoi ?
 Personnellement c'était pour de la migration de code. J'utilisais des expressions régulières de plus en plus complexes pour parser le code du projet. Ca restait limité avec toujours des cas à la marge que l'expression régulière n'attrapait pas. Ne souhaitant pas réinventer la roue, ne pas devoir interpréter le code JavaScript et ses bloques d'accolades `{}`, j'ai découvert les parsers AST qui ont grandement simplifiés et consolidés ce processus de recherche dans le code.
-
-## Qu'est-ce que l'abstract syntax tree ?
-Votre code est rempli de conditions, variables, fonctions, ... et tout cela est interprété pour être exécuter. L'AST va permettre d'avoir une arborescence de tout votre code et de le parcourir tel un objet/JSON. Chaque langage à son/ses interpréteurs.
-En JavaScript, il est possible d'utiliser le parser [TypeScript](https://github.com/Microsoft/TypeScript) ou [Acorn](https://github.com/acornjs/acorn) par exemple. Le site [AST explorer](https://astexplorer.net/) permet de tester/choisir parmi différents langages et parser, puis de voir le résultat de l'AST.
 
 Prenons par exemple ce code JavaScript :
 ```js
@@ -38,7 +40,7 @@ Selon le parser, le nommage de ces éléments, propriétés et la structure mêm
 
 ## Exemples : 
 
-Dans les exemples ci dessous, nous allons utiliser différents librairies :
+Dans les exemples ci dessous, nous allons utiliser différentes librairies :
 
 - [node:path resolve](https://nodejs.org/api/path.html#pathresolvepaths) pour gérer le chemin des fichiers à parser ;
 - [node:fs readFileSync](https://nodejs.org/api/fs.html#fsreadfilesyncpath-options) pour lire le contenu texte des fichiers de manière synchrone ;
