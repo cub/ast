@@ -1,11 +1,12 @@
-# Abstract Syntax Tree "AST", votre ami pour manipuler votre code
+# Analyser et manipuler votre code avec l'Abstract Syntax Tree (aka AST)
 
 ## Qu'est-ce que l'Abstract Syntax Tree ?
 Votre code est rempli de conditions, variables, fonctions, ... et tout cela est interprété pour être exécuté. L'AST va permettre d'avoir une arborescence de tout votre code et de le parcourir tel un objet/JSON. Chaque langage à son/ses interpréteurs.
-En JavaScript, il est possible d'utiliser le parser [TypeScript](https://github.com/Microsoft/TypeScript) ou [Acorn](https://github.com/acornjs/acorn) par exemple. Le site [AST explorer](https://astexplorer.net/) permet de tester/choisir parmi différents langages et parser, puis de voir le résultat de l'AST.
+
+Le site [AST explorer](https://astexplorer.net/) permet de tester/choisir parmi différents langages et parser, puis de voir le résultat de l'AST. Il est possible de générer des AST dans différents langages/environnements comme PHP, Go, Python, ...
 
 ## Introduction
-Dans cet article nous allons voir comment parcourir votre code via un AST pour y lire le contenu et chercher des patterns. Nous prendrons un exemple avec du HTML et un autre exemple avec du JavaScript. Nous serons dans un environnement Node.js dans ces exemples. Il est possible de générer des AST dans d'autres langages/environnements comme PHP, Go, Python, ...
+Dans cet article nous allons voir comment parcourir votre code via un AST pour y lire le contenu et chercher des patterns. Nous prendrons un exemple avec du HTML et un autre exemple avec du JavaScript. Nous serons dans un environnement [Node.js](https://nodejs.org) dans ces exemples. Nous utiliserons le parser [htmlparser2](https://github.com/fb55/htmlparser2) pour le HTML et [TypeScript](https://github.com/Microsoft/TypeScript) comme parser pour le JavaScript.
 
 J'utiliserais de nombreux anglicismes. Voici un rapide glossaire :
 > [AST, Abstract Syntax Tree](https://fr.wikipedia.org/wiki/Arbre_de_la_syntaxe_abstraite) : un arbre dont les nœuds internes sont marqués par des opérateurs et dont les feuilles (ou nœuds externes) représentent les opérandes de ces opérateurs.
@@ -15,7 +16,7 @@ J'utiliserais de nombreux anglicismes. Voici un rapide glossaire :
 > [Parser](https://fr.wiktionary.org/wiki/parser) : outil ou action d'analyse du contenu d'un texte ou d'un fichier pour vérifier sa syntaxe ou en extraire des éléments.
 
 ## Pourquoi ?
-Personnellement c'était pour de la migration de code. J'utilisais des expressions régulières de plus en plus complexes pour parser le code du projet. Ca restait limité avec toujours des cas à la marge que l'expression régulière n'attrapait pas. Ne souhaitant pas réinventer la roue, ne pas devoir interpréter le code JavaScript et ses bloques d'accolades `{}`, j'ai découvert les parsers AST qui ont grandement simplifiés et consolidés ce processus de recherche dans le code.
+Personnellement c'était pour de la migration de code. J'utilisais des expressions régulières de plus en plus complexes pour parser le code du projet. Ca restait limité, avec toujours des cas à la marge que l'expression régulière n'attrapait pas. Ne souhaitant pas réinventer la roue, et ne voulant pas interpréter moi même le code JavaScript avec ses bloques d'accolades `{}`, j'ai découvert les parsers AST qui ont grandement simplifiés et consolidés ce processus de recherche dans le code.
 
 Prenons par exemple ce code JavaScript :
 ```js
@@ -122,7 +123,7 @@ A l’exécution via un `node scan.mjs` (avec `scan.mjs` comme étant le nom du 
 ❌ <input aria-label="test checkbox" class="form-check-input" type="checkbox">
 ❌ <textarea maxlength="500"></textarea>
 ```
-Libre à vous ensuite de corriger les `id` manquants dans votre code.
+Libre à vous ensuite de corriger les `id` manquants dans votre code 😌.
 
 ### [HTML + JavaScript] Migrer un fichier .vue de la syntaxe OptionsAPI en syntaxe CompositionAPI
 
@@ -218,5 +219,9 @@ const cats = ref(['meow', 'miaou']);
 Bien sûr ce script ne couvre que très partiellement une réécriture de la syntaxe OptionsAPI en CompositionAPI. Il faudrait gérer les `computed`, les `props`, ... Et il faudrait surtout repenser votre code pour l'organiser de manière cohérente avec la CompositionAPI.
 
 ## Conclusion
+En résumé je dirais que les parsers AST sont vraiments des bons outils pour parcourir votre code et y chercher le contenu souhaité. C'est plus long à écrire que des expressions régulières, mais c'est surtout plus robuste. Dans des cas simples, les expressions régulières suffiront, dans des cas plus complexes, les parsers AST vous seront bien utiles. De plus, les expressions régulières peuvent faire peurs. Un arbre AST est plus simple à lire.
 
 J'espère que cela vous a inspiré à créer des scripts pour checker/manipuler votre code !
+
+<img src="http://papaing.free.fr/gif/baboulinet2.gif" alt="Baboulinet no fear">
+<figcaption align = "center">Baboulinet pas peur des migrations de code</figcaption>
