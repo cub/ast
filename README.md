@@ -106,7 +106,7 @@ Prenons comme HTML test ce contenu :
 ```
 A l’exécution via un `node scan.mjs` (avec `scan.mjs` comme étant le nom du fichier contenant le code JavaScript ci-dessus), nous aurons comme output :
 ```log
-───/home/cub/example/test.html─────────────────────────────────────────────────────────────────────
+───/home/cub/example.html─────────────────────────────────────────────────────────────────────
 ❌ <input aria-label="test checkbox" class="form-check-input" type="checkbox">
 ❌ <textarea maxlength="500"></textarea>
 ```
