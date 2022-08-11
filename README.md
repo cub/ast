@@ -168,8 +168,8 @@ files.forEach((file) => {
   const dataProperties = dataNode.body.statements[0].expression.properties;
   // rewrite to Ref for CompositionApi
   // each types (text, array, ...) have differents accessors
-  // ex "message: 'Hello World!'"" >> prop.initializer.text
-  // ex "cats: ['meow', 'miaou']"" >> prop.initializer.elements[]
+  // ex "message: 'Hello World!'" >> prop.initializer.text
+  // ex "cats: ['meow', 'miaou']" >> prop.initializer.elements[]
   // we use pos & end to get raw text without care about types
   const dataRefs = dataProperties.map((prop) => `const ${prop.name.escapedText} = ref(${script.slice(prop.initializer.pos, prop.initializer.end).trim()});`);
   // rewrite whole .vue file
