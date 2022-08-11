@@ -115,7 +115,8 @@ Libre à vous ensuite de corriger les `id` manquants dans votre code.
 export default {
   data() {
     return {
-      message: 'Hello World!'
+      message: 'Hello World!',
+      cats: ['meow', 'miaou']
     }
   }
 }
@@ -128,11 +129,11 @@ export default {
 
 ```js
 import { resolve } from 'node:path';
-import { readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { promisify } from 'node:util';
 import { parseDocument, DomUtils } from 'htmlparser2';
+import ts from 'typescript';
 import render from 'dom-serializer';
-import chalk from 'chalk';
 import _glob from 'glob';
 // transform callback to promise
 const glob = promisify(_glob);
@@ -145,9 +146,37 @@ files.forEach((file) => {
   const content = readFileSync(file, 'utf-8');
   // transform the content into object
   const dom = parseDocument(content);
-
+  // stock the <script> content
   const script = render(DomUtils.getElementsByTagName('script', dom)[0].children);
-  console.log(script);
+  // stock the <template>
+  const template = render(DomUtils.getElementsByTagName('template', dom)[0]);
+  // the AST for JavaScript (the content of script)
+  const node = ts.createSourceFile('x.ts', script, ts.ScriptTarget.Latest);
+
+  // all properties of the OptionsApi (data, computed, methods, ...)
+  const rootProperties = node.statements[0].expression.properties;
+  // search for the data node
+  const dataNode = rootProperties.find((prop) => prop.name.escapedText === 'data');
+  if (!dataNode) { console.log('❌ no optionsApi.data found'); return; }
+  // get all properties declared inside data
+  const dataProperties = dataNode.body.statements[0].expression.properties;
+  // rewrite to Ref for CompositionApi
+  // each types (text, array, ...) have differents accessors
+  // ex "message: 'Hello World!'"" >> prop.initializer.text
+  // ex "cats: ['meow', 'miaou']"" >> prop.initializer.elements[]
+  // we use pos & end to get raw text without care about types
+  const dataRefs = dataProperties.map((prop) => `const ${prop.name.escapedText} = ref(${script.slice(prop.initializer.pos, prop.initializer.end).trim()});`);
+  // rewrite whole .vue file
+  const composition = `<script setup>
+import { ref } from 'vue'
+
+${dataRefs.join('\n')}
+</script>
+
+${template}`;
+  // writing the output to a different file with "-composition" suffix
+  writeFileSync(file.replace('.vue', '-composition.vue'), composition, 'utf-8');
+  console.log(`✅ migrated ${file}`);
 });
 ```
 
