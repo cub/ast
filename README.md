@@ -36,22 +36,32 @@ Dans l'AST nous remarquons dans `statements` trois éléments :
 Pour chacun de ces éléments, nous avons les propriétés `pos` et `end`. Ces propriétés correspondent au numéro de caractère de début et de fin dans le fichier. C'est utile pour récupérer les portions de texte qui nous intéressent. Nous avons aussi la propriété `name.escapedText` pour avoir le nom de l'élément.
 Selon le parser, le nommage de ces éléments, propriétés et la structure même de l'AST vont varier. Cependant l'idée reste la même.
 
-## Les expressions régulières, ça aide bien aussi
-Bien que l'AST découpe entièrement le code, un peu d'expressions régulières nous aidera aussi. Voici quelques exemples :
-**TODO**
+## Exemples : 
 
-## Exemple HTML : Rechercher tous les `<input>` et `<textarea>` qui n'ont pas d'attribut `id`
+Dans les exemples ci dessous, nous allons utiliser différents librairies :
 
-Dans cet exemple nous allons utiliser :
 - [node:path resolve](https://nodejs.org/api/path.html#pathresolvepaths) pour gérer le chemin des fichiers à parser ;
 - [node:fs readFileSync](https://nodejs.org/api/fs.html#fsreadfilesyncpath-options) pour lire le contenu texte des fichiers de manière synchrone ;
+- [node:fs writeFileSync](https://nodejs.org/api/fs.html#fswritefilesyncfile-data-options) pour écrire le contenu texte des fichiers de manière synchrone ;
 - [node:util promisify](https://nodejs.org/api/util.html#utilpromisifyoriginal) pour transformer les fonctions avec callback en promise ;
 - [htmlparser2](https://github.com/fb55/htmlparser2) notre parser AST HTML, `parseDocument` permet de générer l'arbre et `DomUtils` de requêter facilement son contenu ;
-- [dom-serializer](https://github.com/cheeriojs/dom-serializer) pour faire transformer notre nœud AST en string HTML ;
+- [dom-serializer](https://github.com/cheeriojs/dom-serializer) pour faire transformer notre nœud AST provenant de `htmlparser2` en string HTML ;
+- [typescript](https://github.com/microsoft/TypeScript) notre parser AST JavaScript (compatible évidemment aussi avec TypeScript) ;
 - [chalk](https://github.com/chalk/chalk) pour mettre un peu de couleur dans nos `console.log` ;
 - [glob](https://github.com/isaacs/node-glob) pour récupérer la liste des fichiers que nous souhaitons parser ;
  
-Notre fichier JavaScript sera un module avec l'extension `.mjs` pour permettre l'utilisation de la syntaxe ESM `import` et l'utilisation d'`await` directement à la racine sans [IIFE](https://developer.mozilla.org/fr/docs/Glossary/IIFE).
+Nos fichiers JavaScript seront des modules avec l'extension `.mjs` pour permettre l'utilisation de la syntaxe ESM `import` et l'utilisation d'`await` directement à la racine sans [IIFE](https://developer.mozilla.org/fr/docs/Glossary/IIFE).
+
+On notera les paramètres du `parseDocument(xxx, { recognizeSelfClosing: true, lowerCaseTags: false })` et du `render(xxx, { encodeEntities: false, xmlMode: true, selfClosingTags: true })` pour garder la mise en forme des déclarations des composants.
+
+Exemple sans ces paramètres :
+```html
+<MonComposant :id="v$.toto" />
+<! deviendrait -->
+<moncomposant :id="v&#x24;.toto"></moncomposant>
+```
+
+### [HTML] Rechercher tous les `<input>` et `<textarea>` qui n'ont pas d'attribut `id`
 
 ```js
 // scan.mjs
@@ -66,14 +76,14 @@ import _glob from 'glob';
 const glob = promisify(_glob);
 
 // where you want to scan html files
-const PATH = resolve('../your-project');
+const PATH = resolve('./your-project');
 const files = await glob(`${PATH}/**/*.html`);
 
 files.forEach((file) => {
   // read the file's content
   const content = readFileSync(file, 'utf-8');
   // transform the content into object
-  const dom = parseDocument(content);
+  const dom = parseDocument(content, { recognizeSelfClosing: true, lowerCaseTags: false });
   // tags names you want to scan
   const tags = ['input', 'textarea'];
   // store errors for output
@@ -85,7 +95,7 @@ files.forEach((file) => {
       // read the id attribute
       if (!element.attribs.id) {
         // use chalk for color, use render to transform node AST into html string
-        errors.push(`❌ ${chalk.gray(render(element))}`);
+        errors.push(`❌ ${chalk.gray(render(element, { encodeEntities: false, xmlMode: true, selfClosingTags: true }))}`);
       }
     });
   });
@@ -112,7 +122,9 @@ A l’exécution via un `node scan.mjs` (avec `scan.mjs` comme étant le nom du 
 ```
 Libre à vous ensuite de corriger les `id` manquants dans votre code.
 
-## Exemple JavaScript, migrer un fichier Vue de la syntaxe Options API en Composition API
+### [HTML + JavaScript] Migrer un fichier .vue de la syntaxe OptionsAPI en syntaxe CompositionAPI
+
+Nous allons prendre comme exemple ce contenu [https://vuejs.org/examples/#hello-world](https://vuejs.org/examples/#hello-world). Dans cette page il est possible de changer l'apercu de syntaxe en haut à gauche. Pour l'exemple nous avons rajouté un data `cats: ['meow', 'miaou']`.
 
 ```html
 <!-- example.vue -->
@@ -131,6 +143,8 @@ export default {
   <h1>{{ message }}</h1>
 </template>
 ```
+Le but est de récupérer dans l'objet Vue, son `data`, puis toutes ses propriétés et leurs valeurs pour les réécrire en `const xxx = ref(yyy)`.
+Pour connaitre les chemins des différents éléments à lire dans l'AST, le site [https://astexplorer.net](https://astexplorer.net) est bien utile. Il est possible sinon de mettre des points d'arret dans votre IDE et de lancer votre script en debug pour visionner en live le contenu de votre AST ([voir tutoriel pour VS Code](https://code.visualstudio.com/docs/nodejs/nodejs-debugging)).
 
 ```js
 // options-to-composition.mjs
@@ -144,18 +158,18 @@ import _glob from 'glob';
 // transform callback to promise
 const glob = promisify(_glob);
 // where you want to scan html files
-const PATH = resolve('./');
+const PATH = resolve('./your-project');
 const files = await glob(`${PATH}/**/*.vue`);
 
 files.forEach((file) => {
   // read the file's content
   const content = readFileSync(file, 'utf-8');
   // transform the content into object
-  const dom = parseDocument(content);
+  const dom = parseDocument(content, { recognizeSelfClosing: true, lowerCaseTags: false });
   // stock the <script> content
-  const script = render(DomUtils.getElementsByTagName('script', dom)[0].children);
+  const script = render(DomUtils.getElementsByTagName('script', dom)[0].children, { encodeEntities: false, xmlMode: true, selfClosingTags: true });
   // stock the <template>
-  const template = render(DomUtils.getElementsByTagName('template', dom)[0]);
+  const template = render(DomUtils.getElementsByTagName('template', dom)[0], { encodeEntities: false, xmlMode: true, selfClosingTags: true });
   // the AST for JavaScript (the content of script)
   const node = ts.createSourceFile('x.ts', script, ts.ScriptTarget.Latest);
 
@@ -186,5 +200,21 @@ ${template}`;
 });
 ```
 
-## Bonus
+Ce qui aura pour effet de créer un nouveau fichier `example-composition.vue` ayant comme contenu :
+```html
+<script setup>
+import { ref } from 'vue'
 
+const message = ref('Hello World!');
+const cats = ref(['meow', 'miaou']);
+</script>
+
+<template>
+  <h1>{{ message }}</h1>
+</template>
+```
+Bien sûr ce script ne couvre que très partiellement une réécriture de la syntaxe OptionsAPI en CompositionAPI. Il faudrait gérer les `computed`, les `props`, ... Et il faudrait surtout repenser votre code pour l'organiser de manière cohérente avec la CompositionAPI.
+
+## Conclusion
+
+J'espère que cela vous a inspiré à créer des scripts pour checker/manipuler votre code !
