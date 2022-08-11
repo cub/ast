@@ -3,7 +3,7 @@
 ## Qu'est-ce que l'Abstract Syntax Tree ?
 Votre code est rempli de conditions, variables, fonctions, ... et tout cela est interprété pour être exécuté. L'AST va permettre d'avoir une arborescence de tout votre code et de le parcourir tel un objet/JSON. Chaque langage à son/ses interpréteurs.
 
-Le site [AST explorer](https://astexplorer.net/) permet de tester/choisir parmi différents langages et parser, puis de voir le résultat de l'AST. Il est possible de générer des AST dans différents langages/environnements comme PHP, Go, Python, ...
+Il est possible de générer des AST dans différents langages/environnements comme PHP, Go, Python, ... Le site [AST explorer](https://astexplorer.net/) permet de tester/choisir parmi ces différents langages et leurs parsers, puis de voir le résultat de l'AST.
 
 ## Introduction
 Dans cet article nous allons voir comment parcourir votre code via un AST pour y lire le contenu et chercher des patterns. Nous prendrons un exemple avec du HTML et un autre exemple avec du JavaScript. Nous serons dans un environnement [Node.js](https://nodejs.org) dans ces exemples. Nous utiliserons le parser [htmlparser2](https://github.com/fb55/htmlparser2) pour le HTML et [TypeScript](https://github.com/Microsoft/TypeScript) comme parser pour le JavaScript.
