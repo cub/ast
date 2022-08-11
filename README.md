@@ -54,6 +54,7 @@ Dans cet exemple nous allons utiliser :
 Notre fichier JavaScript sera un module avec l'extension `.mjs` pour permettre l'utilisation de la syntaxe ESM `import` et l'utilisation d'`await` directement à la racine sans [IIFE](https://developer.mozilla.org/fr/docs/Glossary/IIFE).
 
 ```js
+// scan.mjs
 import { resolve } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { promisify } from 'node:util';
@@ -91,11 +92,14 @@ files.forEach((file) => {
   if (errors.length) {
     console.log(`───${file.padEnd(100, '─')}`);
     console.log(errors.join('\n'));
+  } else {
+    console.log('✅ everything is ok');
   }
 });
 ```
 Prenons comme HTML test ce contenu :
 ```html
+<!-- example.html -->
 <input id="valid-input" aria-label="test avec id" class="form-check-input" type="checkbox">
 <input aria-label="test checkbox" class="form-check-input" type="checkbox">
 <textarea maxlength="500"></textarea>
@@ -111,6 +115,7 @@ Libre à vous ensuite de corriger les `id` manquants dans votre code.
 ## Exemple JavaScript, migrer un fichier Vue de la syntaxe Options API en Composition API
 
 ```html
+<!-- example.vue -->
 <script>
 export default {
   data() {
@@ -128,6 +133,7 @@ export default {
 ```
 
 ```js
+// options-to-composition.mjs
 import { resolve } from 'node:path';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { promisify } from 'node:util';
