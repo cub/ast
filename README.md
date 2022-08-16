@@ -1,9 +1,9 @@
-# Analyser et manipuler votre code avec l'Abstract Syntax Tree (aka AST)
+# Analyser et manipuler votre code avec l'AST (Abstract Syntax Tree)
 
 ## Qu'est-ce que l'Abstract Syntax Tree ?
 Votre code est rempli de conditions, variables, fonctions, ... et tout cela est interprété pour être exécuté. L'AST va permettre d'avoir une arborescence de tout votre code et de le parcourir tel un objet/JSON. Chaque langage à son/ses interpréteurs.
 
-Il est possible de générer des AST dans différents langages/environnements comme PHP, Go, Python, ... Le site [AST explorer](https://astexplorer.net/) permet de tester/choisir parmi ces différents langages et leurs parsers, puis de voir le résultat de l'AST.
+Il est possible de générer des AST dans différents langages comme PHP, Go, Python, ... Le site [AST explorer](https://astexplorer.net/) permet de tester/choisir parmi ces différents langages et leurs parsers, puis de voir le résultat de l'AST.
 
 ## Introduction
 Dans cet article nous allons voir comment parcourir votre code via un AST pour y lire le contenu et chercher des patterns. Nous prendrons un exemple avec du HTML et un autre exemple avec du JavaScript. Nous serons dans un environnement [Node.js](https://nodejs.org) dans ces exemples. Nous utiliserons le parser [htmlparser2](https://github.com/fb55/htmlparser2) pour le HTML et [TypeScript](https://github.com/Microsoft/TypeScript) comme parser pour le JavaScript.
@@ -217,6 +217,15 @@ const cats = ref(['meow', 'miaou']);
 </template>
 ```
 Bien sûr ce script ne couvre que très partiellement une réécriture de la syntaxe OptionsAPI en CompositionAPI. Il faudrait gérer les `computed`, les `props`, ... Et il faudrait surtout repenser votre code pour l'organiser de manière cohérente avec la CompositionAPI.
+
+## Outils existants
+
+Il existe des outils basés sur les AST pour faciliter le parcours du code et le remplacement. Sur le site internet [https://astexplorer.net](https://astexplorer.net) en choisissant le langage JavaScript, nous avons accès au bouton "Transform". Celui-ci permet de choisir différents outils pour transformer des noeuds d'AST. En bas de la fenêtre il est possible de tester des codes de transformation.
+
+De manière générale, vous pouvez trouver des outils/scripts en cherchant "codemod *votre langage*".
+
+- [jscodeshift](https://github.com/facebook/jscodeshift) n'est pas parser, mais un outil basé sur [Recast](https://github.com/benjamn/recast) (un parser AST). Il supporte le JavaScript et le TypeScript (avec modif de configuration). Un article est disponible sur [https://www.toptal.com/javascript/write-code-to-rewrite-your-code](https://www.toptal.com/javascript/write-code-to-rewrite-your-code) pour prendre en main l'outil.
+- [GoGoCode](https://gogocode.io/en) qui supporte le JavaScript, TypeScript et le HTML. Il se veut plus succinct que jscodeshift.
 
 ## Conclusion
 En résumé je dirais que les parsers AST sont vraiments des bons outils pour parcourir votre code et y chercher le contenu souhaité. C'est plus long à écrire que des expressions régulières, mais c'est surtout plus robuste. Dans des cas simples, les expressions régulières suffiront, dans des cas plus complexes, les parsers AST vous seront bien utiles. De plus, les expressions régulières peuvent faire peur. Un arbre AST est plus simple à lire.
