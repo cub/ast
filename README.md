@@ -219,7 +219,7 @@ const cats = ref(['meow', 'miaou']);
 Bien sûr ce script ne couvre que très partiellement une réécriture de la syntaxe OptionsAPI en CompositionAPI. Il faudrait gérer les `computed`, les `props`, ... Et il faudrait surtout repenser votre code pour l'organiser de manière cohérente avec la CompositionAPI.
 
 ## Conclusion
-En résumé je dirais que les parsers AST sont vraiments des bons outils pour parcourir votre code et y chercher le contenu souhaité. C'est plus long à écrire que des expressions régulières, mais c'est surtout plus robuste. Dans des cas simples, les expressions régulières suffiront, dans des cas plus complexes, les parsers AST vous seront bien utiles. De plus, les expressions régulières peuvent faire peurs. Un arbre AST est plus simple à lire.
+En résumé je dirais que les parsers AST sont vraiments des bons outils pour parcourir votre code et y chercher le contenu souhaité. C'est plus long à écrire que des expressions régulières, mais c'est surtout plus robuste. Dans des cas simples, les expressions régulières suffiront, dans des cas plus complexes, les parsers AST vous seront bien utiles. De plus, les expressions régulières peuvent faire peur. Un arbre AST est plus simple à lire.
 
 J'espère que cela vous a inspiré à créer des scripts pour checker/manipuler votre code !
 
