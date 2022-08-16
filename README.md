@@ -60,7 +60,7 @@ On notera les paramètres du `parseDocument(xxx, { recognizeSelfClosing: true, l
 Exemple sans ces paramètres :
 ```html
 <MonComposant :id="v$.toto" />
-<! deviendrait -->
+<!-- deviendrait -->
 <moncomposant :id="v&#x24;.toto"></moncomposant>
 ```
 
