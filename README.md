@@ -224,7 +224,7 @@ Il existe des outils basés sur les AST pour faciliter le parcours du code et le
 
 De manière générale, vous pouvez trouver des outils/scripts en cherchant "codemod *votre langage*".
 
-- [jscodeshift](https://github.com/facebook/jscodeshift) n'est pas parser, mais un outil basé sur [Recast](https://github.com/benjamn/recast) (un parser AST). Il supporte le JavaScript et le TypeScript (avec modif de configuration). Un article est disponible sur [https://www.toptal.com/javascript/write-code-to-rewrite-your-code](https://www.toptal.com/javascript/write-code-to-rewrite-your-code) pour prendre en main l'outil.
+- [jscodeshift](https://github.com/facebook/jscodeshift) n'est pas un parser, mais un outil basé sur [Recast](https://github.com/benjamn/recast) (un parser AST). Il supporte le JavaScript et le TypeScript (avec modif de configuration). Un article est disponible sur [https://www.toptal.com/javascript/write-code-to-rewrite-your-code](https://www.toptal.com/javascript/write-code-to-rewrite-your-code) pour prendre en main l'outil.
 - [GoGoCode](https://gogocode.io/en) qui supporte le JavaScript, TypeScript et le HTML. Il se veut plus succinct que jscodeshift.
 
 ## Conclusion
