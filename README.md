@@ -1,9 +1,9 @@
 # Analyser et manipuler votre code avec l'AST (Abstract Syntax Tree)
 
 ## Qu'est-ce que l'Abstract Syntax Tree ?
-Votre code est rempli de conditions, variables, fonctions, ... et tout cela est interprété pour être exécuté. L'AST va permettre d'avoir une arborescence de tout votre code et de le parcourir tel un objet/JSON. Chaque langage à son/ses interpréteurs.
+Votre code est rempli de conditions, variables, fonctions, … et tout cela est interprété pour être exécuté. L'AST va permettre d'avoir une arborescence de tout votre code et de le parcourir tel un objet/JSON. Chaque langage à son/ses interpréteurs.
 
-Il est possible de générer des AST dans différents langages comme PHP, Go, Python, ... Le site [AST explorer](https://astexplorer.net/) permet de tester/choisir parmi ces différents langages et leurs parsers, puis de voir le résultat de l'AST.
+Il est possible de générer des AST dans différents langages comme PHP, Go, Python, … Le site [AST explorer](https://astexplorer.net/) permet de tester/choisir parmi ces différents langages et leurs parsers, puis de voir le résultat de l'AST.
 
 ## Introduction
 Dans cet article nous allons voir comment parcourir votre code via un AST pour y lire le contenu et chercher des patterns. Nous prendrons un exemple avec du HTML et un autre exemple avec du JavaScript. Nous serons dans un environnement [Node.js](https://nodejs.org) dans ces exemples. Nous utiliserons le parser [htmlparser2](https://github.com/fb55/htmlparser2) pour le HTML et [TypeScript](https://github.com/Microsoft/TypeScript) comme parser pour le JavaScript.
@@ -220,7 +220,7 @@ Bien sûr ce script ne couvre que très partiellement une réécriture de la syn
 
 ## Outils existants
 
-Il existe des outils basés sur les AST pour faciliter le parcours du code et le remplacement. Sur le site internet [https://astexplorer.net](https://astexplorer.net) en choisissant le langage JavaScript, nous avons accès au bouton "Transform". Celui-ci permet de choisir différents outils pour transformer des noeuds d'AST. En bas de la fenêtre il est possible de tester des codes de transformation.
+Il existe des outils basés sur les AST pour faciliter le parcours du code et le remplacement. Sur le site internet [https://astexplorer.net](https://astexplorer.net) en choisissant le langage JavaScript, nous avons accès au bouton "Transform". Celui-ci permet de choisir différents outils pour transformer des nœuds d'AST. En bas de la fenêtre il est possible de tester des codes de transformation.
 
 De manière générale, vous pouvez trouver des outils/scripts en cherchant "codemod *votre langage*".
 
